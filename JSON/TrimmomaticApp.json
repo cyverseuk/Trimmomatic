@@ -1,0 +1,281 @@
+{
+  "name": "trimmomatic_0.36",
+  "label": "trimmomatic 0.36",
+  "shortDescription": "A flexible read trimming tool for Illumina NGS data",
+  "longDescription": "Trimmomatic is a fast, multithreaded command line tool that can be used to trim and crop Illumina (FASTQ) data as well as to remove adapters. ",
+  "helpURI": "http://www.usadellab.org/cms/?page=trimmomatic",
+  "datePublished": "",
+  "author":"Alice Minotto",
+  "version": "0.0.0",
+  "deploymentSystem": "cyverseUK-Storage2",
+  "deploymentPath": "/mnt/data/apps/trimmomatic",
+  "executionSystem": "cyverseUK-Batch2",
+  "executionType": "CLI",
+  "parallelism": "SERIAL",
+  "templatePath": "wrapper.sh",
+  "testPath": "test.sh", ####
+  "ontology": [ "http://edamontology.org/operation_0369",
+    "http://edamontology.org/operation_2121",
+    "http://edamontology.org/operation_3695" ], ####
+  "tags": [ "CyverseUK" ],
+  "inputs": [
+    {"id": "input1",
+    "value": {
+      "required": true,
+      "default": ""
+    },
+    "details": {
+      "label": "Input FASTQ 1",
+      "showArgument": false
+    },
+    "semantics": {
+      "maxCardinality": 1
+    }},
+    {"id": "input2",
+    "value": {
+      "required": false,
+      "default": ""
+      },
+    "details": { "label": "Input FASTQ 2 - only PE mode",
+      "showArgument": false
+    },
+    "semantics": {
+      "maxCardinality": 1
+      }},
+      {"id": "adapter_file",
+      "value": {
+        "required": false,
+        "default": ""
+        },
+      "details": { "label": "FASTA with adapters",
+        "description": "For ILLUMINACLIP step",
+        "showArgument": false
+      },
+      "semantics": {
+        "maxCardinality": 1
+        }}
+    ],
+
+
+  "parameters": [
+    {"id": "mode",
+    "value": {
+      "type": "enumeration",
+      "visible": true,
+      "required": true,
+      "enumValues": [
+        {"SE ":"single end"},
+        {"PE ":"paired end"}
+      ]
+      },
+    "details": {
+      "label": "Mode",
+      "description": "specify if single end or paired end reads are provided",
+      "showArgument": false
+      }},
+    {"id": "phred",
+      "value": {
+        "type": "enumeration",
+        "visible": true,
+        "enumValues": [
+          {"-phred33 ": "Phred 33"},
+          {"-phred64 ": "Phred 64"}
+        ]
+      },
+      "details": {
+        "label": "Quality encoding",
+        "description": "if not specified it will be determined automatically.",
+        "showArgument": false
+      }
+    },
+    {"id": "seed_mismatches",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]+"
+      },
+      "details": {
+        "label": "Seed mismatches",
+        "description": "For ILLUMINACLIP step: pecifies the maximum mismatch count which will still allow a full match to be performed.",
+        "showArgument": false
+      }
+    },
+    {"id": "palindrome_clip_threshold",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Palindrome CLIP threshold",
+        "description": "For ILLUMINACLIP step: pecifies how accurate the match between the two 'adapter ligated' reads must be for PE palindrome read alignment.",
+        "showArgument": false
+      }
+    },
+    {"id": "simple_clip_threshold",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Simple CLIP threshold",
+        "description": "For ILLUMINACLIP step: specifies how accurate the match between any adapter etc. sequence must be against a read.",
+        "showArgument": false
+      }
+    },
+    {"id": "min_adapter_length",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Min adapter length",
+        "description": "For ILLUMINACLIP step: in addition to the alignment score, palindrome mode can verify that a minimum length of adapter has been detected. If unspecified, this defaults to 8 bases, for historical reasons. However, since palindrome mode has a very low false positive rate, this can be safely reduced, even down to 1, to allow shorter adapter fragments to be removed.",
+        "showArgument": false
+      }
+    },
+    {"id": "keep_both_reads",
+      "value": {
+        "type": "bool",
+        "visible": true
+      },
+      "details": {
+        "label": "Keep both reads",
+        "description": "For ILLUMINACLIP step: After read-though has been detected by palindrome mode, and the adapter sequence removed, the reverse read contains the same sequence information as the forward read, albeit in reverse complement. For this reason, the default behaviour is to entirely drop the reverse read. By specifying „true‟ for this parameter, the reverse read will also be retained, which may be useful e.g. if the downstream tools cannot handle a combination of paired and unpaired reads.",
+        "showArgument": false
+      }
+    },
+    {"id": "window_size",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Window size",
+        "description": "For SLIDINGWINDOW step: specifies the number of bases to average across.",
+        "showArgument": false
+      }
+    },
+    {"id": "required_quality",
+      "value": {
+        "type": "string",
+        "validator": "^[0-9]*$",
+        "visible": true
+      },
+      "details": {
+        "label": "Required quality",
+        "description": "For SLIDINGWINDOW step: specifies the average quality required.",
+        "showArgument": false
+      }
+    },
+    {"id": "target_length",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Target length",
+        "description": "For MAXINFO step: This specifies the read length which is likely to allow the location of the read within the target sequence to be determined.",
+        "showArgument": false
+      }
+    },
+    {"id": "strictness",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^(0(\\.[0-9]*)?|1)$"
+      },
+      "details": {
+        "label": "Strictness",
+        "description": "For MAXINFO step: this value, which should be set between 0 and 1, specifies the balance between preserving as much read length as possible vs. removal of incorrect bases. A low value of this parameter (<0.2) favours longer reads, while a high value (>0.8) favours read correctness.",
+        "showArgument": false
+      }
+    },
+    {"id": "leading_quality",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Minimum quality to keep a base at the beginning",
+        "description": "For LEADING step",
+        "showArgument": false
+      }
+    },
+    {"id": "trailing_quality",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Minimum quality to keep a base at the end",
+        "description": "For TRAILING step",
+        "showArgument": false
+      }
+    },
+    {"id": "bases_to_keep",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Bases to keep from the start of the read",
+        "description": "For CROP step",
+        "showArgument": false
+      }
+    },
+    {"id": "bases_to_remove",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Bases to remove from the start",
+        "description": "For HEADCROP step",
+        "showArgument": false
+      }
+    },
+    {"id": "minimum_length",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Minimum length to keep a read",
+        "description": "For MINLEN step",
+        "showArgument": false
+      }
+    },
+    {"id": "reencode33",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "Reencode to base 33",
+        "showArgument": true,
+        "argument": "TOPHRED33 "
+      }
+    },
+    {"id": "reencode64",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "Reencode to base 64",
+        "showArgument": true,
+        "argument": "TOPHRED64 "
+      }
+    }
+]
+}
